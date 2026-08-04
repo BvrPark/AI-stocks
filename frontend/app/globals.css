@@ -307,3 +307,67 @@ margin-right:10px;
 transform:scale(1.2);
 
 }
+
+.sidebar nav a{
+
+display:flex;
+
+align-items:center;
+
+gap:12px;
+
+cursor:pointer;
+
+}
+
+.header-right{
+
+display:flex;
+
+gap:15px;
+
+align-items:center;
+
+}
+
+.loginBtn{
+
+background:#00E676;
+
+color:black;
+
+font-weight:bold;
+
+padding:12px 25px;
+
+border:none;
+
+border-radius:12px;
+
+transition:.3s;
+
+}
+
+.loginBtn:hover{
+
+transform:translateY(-3px);
+
+box-shadow:0 0 20px #00e67688;
+
+}
+
+.card{
+
+transition:.25s;
+
+}
+
+.card:hover{
+
+transform:translateY(-6px);
+
+border-color:#00E676;
+
+box-shadow:0 10px 30px rgba(0,0,0,.4);
+
+}
