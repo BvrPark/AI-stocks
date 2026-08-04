@@ -2,6 +2,9 @@ import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import KpiCard from "@/components/KpiCard";
 import ProgressCard from "@/components/ProgressCard";
+import AiSummary from "@/components/AiSummary";
+import TodoCard from "@/components/TodoCard";
+import TradeHistory from "@/components/TradeHistory";
 
 export default function Home() {
   return (
