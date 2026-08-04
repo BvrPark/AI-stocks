@@ -1,5 +1,7 @@
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
+import KpiCard from "@/components/KpiCard";
+import ProgressCard from "@/components/ProgressCard";
 
 export default function Home() {
   return (
@@ -13,28 +15,80 @@ export default function Home() {
 
         <div className="dashboard">
 
+          <KpiCard
+            title="총 자산"
+            value="₩15,430,000"
+            sub="+231,400 (+1.52%)"
+          />
+
+          <KpiCard
+            title="오늘 수익"
+            value="+₩82,300"
+            sub="+0.54%"
+          />
+
+          <KpiCard
+            title="AI Score"
+            value="92점"
+            sub="★★★★★"
+          />
+
+          <KpiCard
+            title="시장 상태"
+            value="BULL"
+            sub="Risk ON"
+          />
+
+        </div>
+
+        <div className="grid2">
+
+          <ProgressCard
+            title="목표 달성률"
+            percent={31}
+          />
+
+          <ProgressCard
+            title="오늘 목표"
+            percent={47}
+          />
+
+        </div>
+
+        <div className="market">
+
           <div className="card">
-            <h3>총 자산</h3>
-            <h1>₩15,430,000</h1>
-            <p className="green">+231,400 (+1.52%)</p>
+
+            <h2>SOXL</h2>
+
+            <h1 className="green">+4.31%</h1>
+
           </div>
 
           <div className="card">
-            <h3>오늘 목표</h3>
-            <h1>₩82,000</h1>
-            <p>달성률 43%</p>
+
+            <h2>SOXS</h2>
+
+            <h1 className="red">-3.12%</h1>
+
           </div>
 
           <div className="card">
-            <h3>AI Score</h3>
-            <h1>92점</h1>
-            <p className="green">★★★★★ SOXL 적극매수</p>
+
+            <h2>VIX</h2>
+
+            <h1>17.48</h1>
+
           </div>
 
           <div className="card">
-            <h3>시장 상태</h3>
-            <h1>BULL</h1>
-            <p>Risk ON</p>
+
+            <h2>Nasdaq Futures</h2>
+
+            <h1 className="green">
+              +0.72%
+            </h1>
+
           </div>
 
         </div>
