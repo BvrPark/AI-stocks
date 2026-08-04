@@ -1,35 +1,77 @@
 /**
- * AI Stocks
+ * WAFER AI Investment Dashboard
  * Theme Controller
  */
 
 
-const THEME_KEY =
-  "aiStocksTheme";
+const THEME_STORAGE_KEY =
+  "wafer-theme";
+
 
 
 document.addEventListener(
   "DOMContentLoaded",
-  initializeTheme
+  initTheme
 );
 
 
 
-function initializeTheme(){
+
+
+/**
+ * 초기 테마 설정
+ */
+function initTheme(){
+
 
   const savedTheme =
     localStorage.getItem(
-      THEME_KEY
+      THEME_STORAGE_KEY
     );
+
 
 
   if(savedTheme){
 
-    applyTheme(
+
+    setTheme(
       savedTheme
     );
 
+
+  } else {
+
+
+    // 사용자 시스템 설정 확인
+
+    const prefersDark =
+      window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches;
+
+
+
+    if(prefersDark){
+
+      setTheme(
+        "dark"
+      );
+
+
+    }else{
+
+
+      setTheme(
+        "light"
+      );
+
+
+    }
+
+
   }
+
+
 
 
   const button =
@@ -38,13 +80,16 @@ function initializeTheme(){
     );
 
 
+
   if(button){
+
 
     button.addEventListener(
       "click",
       toggleTheme
     );
 
+
   }
 
 
@@ -54,26 +99,37 @@ function initializeTheme(){
 
 
 
+
+
+
+/**
+ * 테마 변경
+ */
 function toggleTheme(){
 
-  const current =
+
+  const currentTheme =
     document.body.dataset.theme;
 
 
+
   if(
-    current==="dark"
+    currentTheme === "dark"
   ){
 
-    applyTheme(
+
+    setTheme(
       "light"
     );
 
-  }
-  else{
 
-    applyTheme(
+  }else{
+
+
+    setTheme(
       "dark"
     );
+
 
   }
 
@@ -85,7 +141,12 @@ function toggleTheme(){
 
 
 
-function applyTheme(
+
+
+/**
+ * 테마 적용
+ */
+function setTheme(
   theme
 ){
 
@@ -96,7 +157,7 @@ function applyTheme(
 
 
   localStorage.setItem(
-    THEME_KEY,
+    THEME_STORAGE_KEY,
     theme
   );
 
@@ -113,6 +174,13 @@ function applyTheme(
 
 
 
+
+
+
+
+/**
+ * 버튼 UI 변경
+ */
 function updateThemeButton(
   theme
 ){
@@ -124,6 +192,7 @@ function updateThemeButton(
     );
 
 
+
   if(!button){
 
     return;
@@ -132,23 +201,49 @@ function updateThemeButton(
 
 
 
+
   if(
     theme==="dark"
   ){
 
+
     button.innerHTML =
-      "☀️ 주간";
+
+    `
+    ☀️ 주간
+    `;
+
+
+  }else{
+
+
+    button.innerHTML =
+
+    `
+    🌙 야간
+    `;
 
 
   }
-  else{
 
 
-    button.innerHTML =
-      "🌙 야간";
+
+}
 
 
-  }
+
+
+
+
+
+
+/**
+ * 외부에서 현재 테마 확인용
+ */
+function getCurrentTheme(){
+
+
+  return document.body.dataset.theme;
 
 
 }
