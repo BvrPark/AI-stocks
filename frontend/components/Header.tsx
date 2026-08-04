@@ -1,4 +1,32 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 export default function Header() {
+
+    const [time,setTime]=useState("");
+
+    useEffect(()=>{
+
+        const update=()=>{
+
+            const now=new Date();
+
+            setTime(
+
+                now.toLocaleString("ko-KR")
+
+            );
+
+        }
+
+        update();
+
+        const timer=setInterval(update,1000);
+
+        return ()=>clearInterval(timer);
+
+    },[])
 
     return(
 
@@ -8,13 +36,13 @@ export default function Header() {
 
                 <h1>Dashboard</h1>
 
-                <p>Investment Operating System</p>
+                <p>{time}</p>
 
             </div>
 
-            <div>
+            <div className="header-right">
 
-                <button>
+                <button className="loginBtn">
 
                     로그인
 
