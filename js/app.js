@@ -1,303 +1,123 @@
-/**
- * WAFER AI Dashboard
- * Main Controller
- */
-
-
-document.addEventListener(
-  "DOMContentLoaded",
-  initApp
-);
-
-
+document.addEventListener("DOMContentLoaded",initApp);
 
 async function initApp(){
-
-
-  initializeNavigation();
-
-
-  initializeRefresh();
-
-
-  updateDate();
-
-
-  await checkApiStatus();
-
-
+initializeMenu();
+initializeButtons();
+updateDate();
+await checkApiStatus();
+await loadDashboard();
 }
 
+function initializeMenu(){
+const menus=document.querySelectorAll(".menu-item");
 
-
-
-
-/**
- * 메뉴 활성화
- */
-function initializeNavigation(){
-
-
-  const menus =
-    document.querySelectorAll(
-      ".menu-item"
-    );
-
-
-
-  menus.forEach(
-    menu=>{
-
-
-      menu.addEventListener(
-        "click",
-        ()=>{
-
-
-          menus.forEach(
-            item=>
-              item.classList.remove(
-                "active"
-              )
-          );
-
-
-          menu.classList.add(
-            "active"
-          );
-
-
-        }
-      );
-
-
-    }
-  );
-
-
+menus.forEach(menu=>{
+menu.addEventListener("click",()=>{
+menus.forEach(item=>item.classList.remove("active"));
+menu.classList.add("active");
+});
+});
 }
 
+function initializeButtons(){
+const refresh=document.getElementById("refresh-button");
 
-
-
-
-
-
-/**
- * 새로고침
- */
-function initializeRefresh(){
-
-
-  const button =
-    document.querySelector(
-      ".refresh-button"
-    );
-
-
-  if(!button){
-
-    return;
-
-  }
-
-
-  button.addEventListener(
-    "click",
-    async()=>{
-
-
-      await loadDashboard();
-
-
-    }
-  );
-
-
+if(refresh){
+refresh.addEventListener("click",async()=>{
+await loadDashboard();
+});
+}
 }
 
-
-
-
-
-
-
-/**
- * API 상태 확인
- */
 async function checkApiStatus(){
+const status=document.getElementById("sidebar-api-status");
+const dot=document.getElementById("sidebar-api-dot");
 
+try{
+const result=await checkTossConnection();
 
-  try{
+if(status) status.textContent="연결 완료";
+if(dot) dot.style.background="#16a34a";
 
+}catch(error){
 
-    const result =
-      await checkTossConnection();
-
-
-
-    updateApiStatus(
-      true,
-      result.message
-    );
-
-
-  }catch(error){
-
-
-    updateApiStatus(
-      false,
-      "API 연결 필요"
-    );
-
-
-  }
-
+if(status) status.textContent="연결 필요";
+if(dot) dot.style.background="#ef4444";
 
 }
-
-
-
-
-
-
-
-function updateApiStatus(
-  connected,
-  message
-){
-
-
-  const status =
-    document.querySelector(
-      ".api-status p"
-    );
-
-
-  const dot =
-    document.querySelector(
-      ".status-dot"
-    );
-
-
-
-  if(status){
-
-    status.textContent =
-      connected
-      ?
-      "연결 완료"
-      :
-      message;
-
-
-  }
-
-
-
-  if(dot){
-
-    dot.style.background =
-      connected
-      ?
-      "#19a974"
-      :
-      "#facc15";
-
-  }
-
-
-
 }
 
-
-
-
-
-
-
-
-/**
- * 날짜 표시
- */
-function updateDate(){
-
-
-  const element =
-    document.querySelector(
-      ".date"
-    );
-
-
-  if(!element){
-
-    return;
-
-  }
-
-
-
-  const today =
-    new Date();
-
-
-
-  element.textContent =
-    today
-      .toLocaleDateString(
-        "ko-KR"
-      );
-
-
-}
-
-
-
-
-
-
-
-
-/**
- * 전체 데이터 로딩
- */
 async function loadDashboard(){
 
+try{
 
-  try{
+if(typeof loadPortfolio==="function"){
+await loadPortfolio();
+}
 
+if(typeof loadTrades==="function"){
+await loadTrades();
+}
 
-    if(
-      typeof loadPortfolio ===
-      "function"
-    ){
+await loadAccount();
 
-      await loadPortfolio();
+}catch(error){
+console.error(error);
+}
 
-    }
+}
 
+async function loadAccount(){
 
+try{
 
-    if(
-      typeof loadTrades ===
-      "function"
-    ){
+const data=await getAccount();
 
-      await loadTrades();
+setText("account-total-value",formatMoney(data.totalValue));
+setText("account-buy-value",formatMoney(data.buyValue));
+setText("account-cash",formatMoney(data.cash));
+setText("account-profit",formatMoney(data.profit));
+setText("account-return",formatPercent(data.returnRate));
 
-    }
+}catch(error){
+console.log("계좌 데이터 대기");
+}
 
+}
 
+async function loadMarketData(){
 
-  }catch(error){
+try{
 
+const data=await apiRequest("market");
 
-    console.error(
-      error
-    );
+setText("vix-value",data.vix);
+setText("nasdaq-value",data.nasdaq);
+setText("fear-greed-value",data.fearGreed);
+setText("exchange-value",data.exchange);
 
+}catch(error){
+console.log("시장 데이터 대기");
+}
 
-  }
+}
 
+function setText(id,value){
+
+const element=document.getElementById(id);
+
+if(element){
+element.textContent=value??"-";
+}
+
+}
+
+function updateDate(){
+
+const element=document.querySelector(".date");
+
+if(element){
+element.textContent=new Date().toLocaleDateString("ko-KR");
+}
 
 }
