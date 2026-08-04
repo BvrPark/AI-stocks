@@ -96,6 +96,20 @@ export default function Home() {
 
         </div>
 
+    <div className="grid2">
+
+      <AiSummary />
+
+      <TodoCard />
+
+    </div>
+
+    <div style={{ marginTop: 30 }}>
+
+      <TradeHistory />
+
+    </div>
+
       </section>
 
     </main>
