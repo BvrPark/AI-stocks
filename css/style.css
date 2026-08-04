@@ -20,6 +20,10 @@
 
 * { box-sizing: border-box; }
 
+html { scroll-behavior: smooth; }
+
+#dashboard { scroll-margin-top: 90px; display: block; }
+
 body {
   margin: 0;
   background: var(--bg);
