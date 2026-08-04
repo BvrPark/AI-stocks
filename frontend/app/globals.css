@@ -265,3 +265,45 @@ grid-template-columns:repeat(4,1fr);
 gap:25px;
 
 }
+
+.market-item{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:18px;
+
+background:#161d2d;
+
+border-radius:15px;
+
+border:1px solid #2b3546;
+
+}
+
+table{
+
+width:100%;
+
+border-collapse:collapse;
+
+}
+
+td{
+
+padding:15px;
+
+border-bottom:1px solid #263244;
+
+}
+
+input{
+
+margin-right:10px;
+
+transform:scale(1.2);
+
+}
