@@ -449,15 +449,47 @@ document.getElementById('refreshAllBtn').addEventListener('click', () => {
   renderAiSection();
 });
 
-// -------------------- 사이드바 스크롤 강조 --------------------
+// -------------------- 사이드바 스크롤 강조 (스크롤스파이) --------------------
 const navItems = document.querySelectorAll('.nav-item');
+const sectionNavMap = {};
+navItems.forEach((item) => { sectionNavMap[item.getAttribute('data-section')] = item; });
+
+const spySections = Object.keys(sectionNavMap)
+  .map((id) => document.getElementById(id))
+  .filter(Boolean);
+
+function setActiveNav(sectionId) {
+  const item = sectionNavMap[sectionId];
+  if (!item || item.classList.contains('active')) return;
+  navItems.forEach((i) => i.classList.remove('active'));
+  item.classList.add('active');
+  document.getElementById('breadcrumbCurrent').textContent = item.textContent;
+}
+
+function updateActiveOnScroll() {
+  const triggerLine = 110; // 상단바 높이만큼 여유를 둔 기준선(px)
+  let currentId = spySections[0] ? spySections[0].id : null;
+  spySections.forEach((sec) => {
+    const rect = sec.getBoundingClientRect();
+    if (rect.top - triggerLine <= 0) currentId = sec.id;
+  });
+  if (currentId) setActiveNav(currentId);
+}
+
+let spyTicking = false;
+window.addEventListener('scroll', () => {
+  if (!spyTicking) {
+    window.requestAnimationFrame(() => {
+      updateActiveOnScroll();
+      spyTicking = false;
+    });
+    spyTicking = true;
+  }
+}, { passive: true });
+
 navItems.forEach((item) => {
   item.addEventListener('click', () => {
-    navItems.forEach((i) => i.classList.remove('active'));
-    item.classList.add('active');
-    const section = item.getAttribute('data-section');
-    const label = item.textContent;
-    document.getElementById('breadcrumbCurrent').textContent = label;
+    setActiveNav(item.getAttribute('data-section'));
   });
 });
 
@@ -469,6 +501,7 @@ function init() {
   updateFngGauge(savedFng);
   loadGoal();
   updateSignalDonut([]);
+  updateActiveOnScroll();
 
   if (apiKey) {
     loadAllQuotes();
