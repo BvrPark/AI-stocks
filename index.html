@@ -1,935 +1,974 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
-  <meta charset="UTF-8" />
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
+<meta charset="UTF-8">
 
-  <meta
-    name="description"
-    content="토스증권 API 기반 미국주식 계좌 및 매매일지 대시보드"
-  />
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
-  <title>AI Stocks | 투자 대시보드</title>
+<title>
+WA-FER | AI Investment Dashboard
+</title>
 
-  <link rel="stylesheet" href="./css/style.css" />
 
-  <script src="./js/api.js" defer></script>
-  <script src="./js/app.js" defer></script>
-  <script src="./js/portfolio.js" defer></script>
-  <script src="./js/trade-journal.js" defer></script>
+<link rel="stylesheet"
+href="./css/style.css">
+
+
+<script src="./js/theme.js" defer></script>
+<script src="./js/api.js" defer></script>
+<script src="./js/app.js" defer></script>
+<script src="./js/portfolio.js" defer></script>
+<script src="./js/trade-journal.js" defer></script>
+
+
 </head>
 
+
 <body>
-  <div class="app-layout">
-    <!-- 사이드바 -->
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-header">
-        <a href="./index.html" class="logo">
-          <span class="logo-mark">A</span>
-
-          <div>
-            <strong>AI Stocks</strong>
-            <span>Trading Journal</span>
-          </div>
-        </a>
-
-        <button
-          type="button"
-          class="mobile-close-button"
-          id="mobile-close-button"
-          aria-label="사이드바 닫기"
-        >
-          ×
-        </button>
-      </div>
-
-      <nav class="sidebar-nav" aria-label="주요 메뉴">
-        <a href="#dashboard" class="nav-link active">
-          <span class="nav-icon">◫</span>
-          <span>대시보드</span>
-        </a>
-
-        <a href="#portfolio" class="nav-link">
-          <span class="nav-icon">▦</span>
-          <span>보유 종목</span>
-        </a>
-
-        <a href="#trade-journal" class="nav-link">
-          <span class="nav-icon">✎</span>
-          <span>매매일지</span>
-        </a>
-
-        <a href="#watchlist" class="nav-link">
-          <span class="nav-icon">★</span>
-          <span>관심 종목</span>
-        </a>
-
-        <a href="#settings" class="nav-link">
-          <span class="nav-icon">⚙</span>
-          <span>설정</span>
-        </a>
-      </nav>
-
-      <div class="sidebar-footer">
-        <div class="api-mini-status">
-          <span
-            class="status-dot status-dot-pending"
-            id="sidebar-api-status-dot"
-          ></span>
-
-          <div>
-            <strong id="sidebar-api-status-title">
-              토스 API 확인 중
-            </strong>
-
-            <span id="sidebar-api-status-message">
-              연결 상태를 확인하고 있습니다.
-            </span>
-          </div>
-        </div>
-      </div>
-    </aside>
-
-    <!-- 모바일 사이드바 배경 -->
-    <div
-      class="sidebar-overlay"
-      id="sidebar-overlay"
-      aria-hidden="true"
-    ></div>
-
-    <!-- 메인 콘텐츠 -->
-    <main class="main-content">
-      <!-- 상단 헤더 -->
-      <header class="top-header">
-        <div class="header-left">
-          <button
-            type="button"
-            class="mobile-menu-button"
-            id="mobile-menu-button"
-            aria-label="사이드바 열기"
-          >
-            ☰
-          </button>
-
-          <div>
-            <p class="page-eyebrow">TOSS INVESTMENTS DASHBOARD</p>
-            <h1>투자 대시보드</h1>
-          </div>
-        </div>
-
-        <div class="header-actions">
-          <div class="last-updated">
-            <span>마지막 업데이트</span>
-            <strong id="last-updated-at">-</strong>
-          </div>
-
-          <button
-            type="button"
-            class="secondary-button"
-            id="refresh-dashboard-button"
-          >
-            새로고침
-          </button>
-        </div>
-      </header>
-
-      <!-- 알림 영역 -->
-      <section
-        class="notice-banner hidden"
-        id="notice-banner"
-        aria-live="polite"
-      >
-        <div>
-          <strong id="notice-title">안내</strong>
-          <p id="notice-message"></p>
-        </div>
-
-        <button
-          type="button"
-          id="notice-close-button"
-          aria-label="알림 닫기"
-        >
-          ×
-        </button>
-      </section>
-
-      <!-- 대시보드 -->
-      <section class="page-section" id="dashboard">
-        <div class="section-heading">
-          <div>
-            <span class="section-label">ACCOUNT SUMMARY</span>
-            <h2>내 계좌</h2>
-          </div>
-
-          <div
-            class="connection-badge connection-pending"
-            id="connection-badge"
-          >
-            <span class="connection-dot"></span>
-            <span id="connection-badge-text">연결 확인 중</span>
-          </div>
-        </div>
-
-        <!-- 계좌 요약 카드 -->
-        <div class="summary-grid">
-          <article class="summary-card primary-card">
-            <div class="card-heading-row">
-              <span class="card-label">총 평가금액</span>
-              <span class="card-caption">Total Equity</span>
-            </div>
-
-            <strong
-              class="summary-value"
-              id="total-evaluation-amount"
-            >
-              -
-            </strong>
-
-            <div class="summary-sub-row">
-              <span>평가손익</span>
-
-              <strong
-                class="neutral-text"
-                id="total-profit-loss"
-              >
-                -
-              </strong>
-            </div>
-          </article>
-
-          <article class="summary-card">
-            <div class="card-heading-row">
-              <span class="card-label">총 매입금액</span>
-              <span class="card-caption">Invested</span>
-            </div>
-
-            <strong
-              class="summary-value"
-              id="total-purchase-amount"
-            >
-              -
-            </strong>
-
-            <p class="summary-helper">
-              보유 종목 매입금액 합계
-            </p>
-          </article>
-
-          <article class="summary-card">
-            <div class="card-heading-row">
-              <span class="card-label">주문 가능 금액</span>
-              <span class="card-caption">Buying Power</span>
-            </div>
-
-            <strong
-              class="summary-value"
-              id="available-order-amount"
-            >
-              -
-            </strong>
-
-            <p class="summary-helper">
-              신규 주문에 사용할 수 있는 금액
-            </p>
-          </article>
-
-          <article class="summary-card">
-            <div class="card-heading-row">
-              <span class="card-label">예수금</span>
-              <span class="card-caption">Cash Balance</span>
-            </div>
-
-            <strong
-              class="summary-value"
-              id="cash-balance"
-            >
-              -
-            </strong>
-
-            <p class="summary-helper">
-              계좌 내 현금성 잔액
-            </p>
-          </article>
-        </div>
-
-        <!-- 목표 및 성과 -->
-        <div class="dashboard-grid">
-          <article class="panel target-panel">
-            <div class="panel-header">
-              <div>
-                <span class="section-label">GOAL</span>
-                <h3>목표 달성률</h3>
-              </div>
-
-              <button
-                type="button"
-                class="text-button"
-                id="edit-goal-button"
-              >
-                목표 수정
-              </button>
-            </div>
-
-            <div class="goal-amount-row">
-              <div>
-                <span>현재 자산</span>
-                <strong id="goal-current-amount">-</strong>
-              </div>
-
-              <div class="goal-arrow">→</div>
-
-              <div>
-                <span>목표금액</span>
-                <strong id="goal-target-amount">-</strong>
-              </div>
-            </div>
-
-            <div class="progress-track">
-              <div
-                class="progress-bar"
-                id="goal-progress-bar"
-                style="width: 0%"
-              ></div>
-            </div>
-
-            <div class="progress-footer">
-              <strong id="goal-progress-percent">0%</strong>
-              <span id="goal-remaining-amount">
-                목표금액을 설정해 주세요.
-              </span>
-            </div>
-          </article>
-
-          <article class="panel performance-panel">
-            <div class="panel-header">
-              <div>
-                <span class="section-label">PERFORMANCE</span>
-                <h3>계좌 성과</h3>
-              </div>
-            </div>
-
-            <div class="performance-list">
-              <div class="performance-item">
-                <span>전체 수익률</span>
-
-                <strong
-                  class="neutral-text"
-                  id="total-return-rate"
-                >
-                  -
-                </strong>
-              </div>
-
-              <div class="performance-item">
-                <span>보유 종목 수</span>
-                <strong id="holding-count">-</strong>
-              </div>
-
-              <div class="performance-item">
-                <span>오늘 평가손익</span>
-
-                <strong
-                  class="neutral-text"
-                  id="daily-profit-loss"
-                >
-                  -
-                </strong>
-              </div>
-
-              <div class="performance-item">
-                <span>달러 환율</span>
-                <strong id="exchange-rate">-</strong>
-              </div>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <!-- 보유 종목 -->
-      <section class="page-section" id="portfolio">
-        <div class="section-heading">
-          <div>
-            <span class="section-label">PORTFOLIO</span>
-            <h2>보유 종목</h2>
-          </div>
-
-          <div class="table-actions">
-            <label class="search-box">
-              <span>검색</span>
-
-              <input
-                type="search"
-                id="portfolio-search-input"
-                placeholder="종목명 또는 티커"
-                autocomplete="off"
-              />
-            </label>
-          </div>
-        </div>
-
-        <div class="panel table-panel">
-          <div class="table-wrapper">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>종목</th>
-                  <th>보유수량</th>
-                  <th>평균단가</th>
-                  <th>현재가</th>
-                  <th>매입금액</th>
-                  <th>평가금액</th>
-                  <th>평가손익</th>
-                  <th>수익률</th>
-                </tr>
-              </thead>
-
-              <tbody id="portfolio-table-body">
-                <tr class="empty-table-row">
-                  <td colspan="8">
-                    <div class="empty-state">
-                      <span class="empty-state-icon">↻</span>
-
-                      <strong>
-                        토스 API 계좌 정보를 불러오는 중입니다.
-                      </strong>
-
-                      <p>
-                        연결 전에는 임의의 계좌 데이터를 표시하지 않습니다.
-                      </p>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- 관심 종목 -->
-      <section class="page-section" id="watchlist">
-        <div class="section-heading">
-          <div>
-            <span class="section-label">WATCHLIST</span>
-            <h2>관심 종목</h2>
-          </div>
-
-          <button
-            type="button"
-            class="secondary-button"
-            id="add-watchlist-button"
-          >
-            종목 추가
-          </button>
-        </div>
-
-        <div class="watchlist-grid" id="watchlist-grid">
-          <article class="watchlist-card watchlist-placeholder">
-            <div>
-              <strong>SOXL</strong>
-              <span>Direxion Semiconductor Bull 3X</span>
-            </div>
-
-            <div class="watchlist-price">
-              <strong>-</strong>
-              <span>API 연결 필요</span>
-            </div>
-          </article>
-
-          <article class="watchlist-card watchlist-placeholder">
-            <div>
-              <strong>SOXS</strong>
-              <span>Direxion Semiconductor Bear 3X</span>
-            </div>
-
-            <div class="watchlist-price">
-              <strong>-</strong>
-              <span>API 연결 필요</span>
-            </div>
-          </article>
-
-          <article class="watchlist-card watchlist-placeholder">
-            <div>
-              <strong>TQQQ</strong>
-              <span>ProShares UltraPro QQQ</span>
-            </div>
-
-            <div class="watchlist-price">
-              <strong>-</strong>
-              <span>API 연결 필요</span>
-            </div>
-          </article>
-
-          <article class="watchlist-card watchlist-placeholder">
-            <div>
-              <strong>VIX</strong>
-              <span>CBOE Volatility Index</span>
-            </div>
-
-            <div class="watchlist-price">
-              <strong>-</strong>
-              <span>시세 연결 필요</span>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <!-- 매매일지 -->
-      <section class="page-section" id="trade-journal">
-        <div class="section-heading">
-          <div>
-            <span class="section-label">TRADING JOURNAL</span>
-            <h2>매매일지</h2>
-          </div>
-
-          <div class="section-actions">
-            <button
-              type="button"
-              class="secondary-button"
-              id="sync-executions-button"
-            >
-              토스 체결내역 동기화
-            </button>
-
-            <button
-              type="button"
-              class="primary-button"
-              id="open-trade-modal-button"
-            >
-              직접 기록
-            </button>
-          </div>
-        </div>
-
-        <!-- 매매 통계 -->
-        <div class="journal-summary-grid">
-          <article class="journal-summary-card">
-            <span>누적 실현손익</span>
-
-            <strong
-              class="neutral-text"
-              id="journal-realized-profit"
-            >
-              -
-            </strong>
-          </article>
-
-          <article class="journal-summary-card">
-            <span>승률</span>
-            <strong id="journal-win-rate">-</strong>
-          </article>
-
-          <article class="journal-summary-card">
-            <span>총 거래 수</span>
-            <strong id="journal-trade-count">-</strong>
-          </article>
-
-          <article class="journal-summary-card">
-            <span>평균 수익률</span>
-
-            <strong
-              class="neutral-text"
-              id="journal-average-return"
-            >
-              -
-            </strong>
-          </article>
-        </div>
-
-        <div class="panel table-panel">
-          <div class="journal-filter-row">
-            <div class="filter-group">
-              <label>
-                <span>종목</span>
-
-                <select id="journal-symbol-filter">
-                  <option value="">전체 종목</option>
-                </select>
-              </label>
-
-              <label>
-                <span>구분</span>
-
-                <select id="journal-source-filter">
-                  <option value="">전체</option>
-                  <option value="toss">토스 체결내역</option>
-                  <option value="manual">직접 입력</option>
-                </select>
-              </label>
-            </div>
-
-            <button
-              type="button"
-              class="text-button danger-text"
-              id="delete-all-manual-trades-button"
-            >
-              직접 입력 기록 전체 삭제
-            </button>
-          </div>
-
-          <div class="table-wrapper">
-            <table class="data-table journal-table">
-              <thead>
-                <tr>
-                  <th>거래일</th>
-                  <th>종목</th>
-                  <th>구분</th>
-                  <th>수량</th>
-                  <th>매수가</th>
-                  <th>매도가</th>
-                  <th>실현손익</th>
-                  <th>수익률</th>
-                  <th>매매 근거</th>
-                  <th>관리</th>
-                </tr>
-              </thead>
-
-              <tbody id="trade-journal-table-body">
-                <tr class="empty-table-row">
-                  <td colspan="10">
-                    <div class="empty-state">
-                      <span class="empty-state-icon">✎</span>
-
-                      <strong>
-                        아직 등록된 매매일지가 없습니다.
-                      </strong>
-
-                      <p>
-                        토스 체결내역을 동기화하거나 직접 기록해 주세요.
-                      </p>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- 설정 -->
-      <section class="page-section" id="settings">
-        <div class="section-heading">
-          <div>
-            <span class="section-label">SETTINGS</span>
-            <h2>설정</h2>
-          </div>
-        </div>
-
-        <div class="settings-grid">
-          <article class="panel">
-            <div class="panel-header">
-              <div>
-                <h3>토스 API 연결</h3>
-                <p class="panel-description">
-                  인증정보는 브라우저가 아닌 Netlify 환경변수에서
-                  관리됩니다.
-                </p>
-              </div>
-            </div>
-
-            <div class="api-status-box">
-              <div class="api-status-row">
-                <span>환경변수 설정</span>
-
-                <strong id="api-configured-status">
-                  확인 중
-                </strong>
-              </div>
-
-              <div class="api-status-row">
-                <span>계좌 조회</span>
-
-                <strong id="api-account-status">
-                  확인 전
-                </strong>
-              </div>
-
-              <div class="api-status-row">
-                <span>시세 조회</span>
-
-                <strong id="api-quote-status">
-                  확인 전
-                </strong>
-              </div>
-
-              <div class="api-status-row">
-                <span>체결내역 조회</span>
-
-                <strong id="api-execution-status">
-                  확인 전
-                </strong>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              class="secondary-button full-width-button"
-              id="check-api-button"
-            >
-              API 연결 상태 확인
-            </button>
-          </article>
-
-          <article class="panel">
-            <div class="panel-header">
-              <div>
-                <h3>자산 목표</h3>
-                <p class="panel-description">
-                  목표금액과 기준 통화를 설정합니다.
-                </p>
-              </div>
-            </div>
-
-            <form id="goal-settings-form">
-              <label class="form-field">
-                <span>목표금액</span>
-
-                <input
-                  type="number"
-                  id="goal-amount-input"
-                  min="0"
-                  step="10000"
-                  placeholder="50000000"
-                  required
-                />
-              </label>
-
-              <label class="form-field">
-                <span>기준 통화</span>
-
-                <select id="base-currency-input">
-                  <option value="KRW">KRW · 원화</option>
-                  <option value="USD">USD · 달러</option>
-                </select>
-              </label>
-
-              <button
-                type="submit"
-                class="primary-button full-width-button"
-              >
-                목표 저장
-              </button>
-            </form>
-          </article>
-        </div>
-      </section>
-
-      <footer class="site-footer">
-        <p>
-          본 서비스는 개인 투자 기록 및 정보 확인을 위한 도구이며,
-          투자 수익을 보장하지 않습니다.
-        </p>
-
-        <span>AI Stocks Dashboard</span>
-      </footer>
-    </main>
-  </div>
-
-  <!-- 매매일지 등록 모달 -->
-  <div
-    class="modal-backdrop hidden"
-    id="trade-modal"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="trade-modal-title"
-  >
-    <div class="modal-card">
-      <div class="modal-header">
-        <div>
-          <span class="section-label">MANUAL JOURNAL</span>
-          <h2 id="trade-modal-title">매매 기록 등록</h2>
-        </div>
-
-        <button
-          type="button"
-          class="modal-close-button"
-          id="close-trade-modal-button"
-          aria-label="모달 닫기"
-        >
-          ×
-        </button>
-      </div>
-
-      <form id="trade-form">
-        <input type="hidden" id="trade-id-input" />
-
-        <div class="form-grid">
-          <label class="form-field">
-            <span>거래일</span>
-
-            <input
-              type="date"
-              id="trade-date-input"
-              required
-            />
-          </label>
-
-          <label class="form-field">
-            <span>종목 티커</span>
-
-            <input
-              type="text"
-              id="trade-symbol-input"
-              placeholder="SOXL"
-              maxlength="15"
-              required
-            />
-          </label>
-
-          <label class="form-field">
-            <span>거래 방향</span>
-
-            <select id="trade-direction-input" required>
-              <option value="long">매수 후 매도</option>
-              <option value="short">매도 후 매수</option>
-            </select>
-          </label>
-
-          <label class="form-field">
-            <span>수량</span>
-
-            <input
-              type="number"
-              id="trade-quantity-input"
-              min="0"
-              step="0.0001"
-              required
-            />
-          </label>
-
-          <label class="form-field">
-            <span>매수가</span>
-
-            <input
-              type="number"
-              id="trade-entry-price-input"
-              min="0"
-              step="0.0001"
-              required
-            />
-          </label>
-
-          <label class="form-field">
-            <span>매도가</span>
-
-            <input
-              type="number"
-              id="trade-exit-price-input"
-              min="0"
-              step="0.0001"
-              required
-            />
-          </label>
-
-          <label class="form-field">
-            <span>수수료 및 제비용</span>
-
-            <input
-              type="number"
-              id="trade-fee-input"
-              min="0"
-              step="0.01"
-              value="0"
-            />
-          </label>
-
-          <label class="form-field form-field-wide">
-            <span>매매 근거</span>
-
-            <textarea
-              id="trade-reason-input"
-              rows="4"
-              maxlength="500"
-              placeholder="진입 근거, 시장 상황, 실수 또는 잘한 점을 기록하세요."
-            ></textarea>
-          </label>
-        </div>
-
-        <div class="modal-actions">
-          <button
-            type="button"
-            class="secondary-button"
-            id="cancel-trade-button"
-          >
-            취소
-          </button>
-
-          <button
-            type="submit"
-            class="primary-button"
-          >
-            저장
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 목표 수정 모달 -->
-  <div
-    class="modal-backdrop hidden"
-    id="goal-modal"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="goal-modal-title"
-  >
-    <div class="modal-card small-modal-card">
-      <div class="modal-header">
-        <div>
-          <span class="section-label">GOAL SETTING</span>
-          <h2 id="goal-modal-title">목표금액 수정</h2>
-        </div>
-
-        <button
-          type="button"
-          class="modal-close-button"
-          id="close-goal-modal-button"
-          aria-label="모달 닫기"
-        >
-          ×
-        </button>
-      </div>
-
-      <form id="goal-modal-form">
-        <label class="form-field">
-          <span>목표금액</span>
-
-          <input
-            type="number"
-            id="goal-modal-amount-input"
-            min="0"
-            step="10000"
-            required
-          />
-        </label>
-
-        <div class="modal-actions">
-          <button
-            type="button"
-            class="secondary-button"
-            id="cancel-goal-button"
-          >
-            취소
-          </button>
-
-          <button
-            type="submit"
-            class="primary-button"
-          >
-            저장
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 로딩 화면 -->
-  <div class="loading-overlay hidden" id="loading-overlay">
-    <div class="loading-spinner"></div>
-    <p id="loading-message">데이터를 불러오고 있습니다.</p>
-  </div>
+
+
+<div class="app">
+
+
+<!-- ======================
+     SIDEBAR
+======================= -->
+
+
+<aside class="sidebar">
+
+
+<div class="brand">
+
+
+<div class="brand-logo">
+W
+</div>
+
+
+<div>
+
+<h2>
+WAFER
+</h2>
+
+<p>
+AI 투자 관리 시스템
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+<nav class="menu">
+
+
+<p class="menu-title">
+메인 화면
+</p>
+
+
+<a class="menu-item active">
+
+<span>
+▣
+</span>
+
+통합 대시보드
+
+</a>
+
+
+
+<p class="menu-title">
+투자 정보 관리
+</p>
+
+
+
+<a class="menu-item">
+
+<span>
+▤
+</span>
+
+관심종목 조회
+
+</a>
+
+
+<a class="menu-item">
+
+<span>
+◔
+</span>
+
+시장 지표
+
+</a>
+
+
+
+<p class="menu-title">
+AI 진단
+</p>
+
+
+
+<a class="menu-item">
+
+<span>
+◎
+</span>
+
+AI 매매 추천
+
+</a>
+
+
+
+
+<p class="menu-title">
+목표 관리
+</p>
+
+
+<a class="menu-item">
+
+<span>
+☆ 
+</span>
+
+목표 수익 설정
+
+</a>
+
+
+
+
+<p class="menu-title">
+시스템
+</p>
+
+
+
+<a class="menu-item">
+
+<span>
+⚙
+</span>
+
+API 설정
+
+</a>
+
+
+</nav>
+
+
+
+
+<div class="sidebar-bottom">
+
+
+<div class="api-status">
+
+
+<span class="status-dot">
+</span>
+
+
+<div>
+
+<strong>
+Toss API
+</strong>
+
+
+<p>
+연결 대기
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+</aside>
+
+
+
+
+
+
+<!-- ======================
+     MAIN
+======================= -->
+
+
+<main class="main">
+
+
+
+<header class="topbar">
+
+
+<div>
+
+
+<div class="breadcrumb">
+
+Home
+<span>
+›
+</span>
+통합 대시보드
+
+
+</div>
+
+
+<h1>
+내 투자 통합 대시보드
+</h1>
+
+
+<p class="description">
+
+WAFER AI 투자 관리 시스템 · 관심종목 10개 · 데이터 연동 준비
+
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="top-actions">
+
+
+<button
+class="theme-button"
+id="theme-toggle-button">
+
+🌙 야간
+
+</button>
+
+
+<div class="date">
+
+2026.08.05
+
+</div>
+
+
+
+<button
+class="user-button">
+
+투자자
+
+</button>
+
+
+
+</div>
+
+
+
+</header>
+
+
+
+
+
+
+
+<!-- ======================
+ KPI
+======================= -->
+
+
+<section class="kpi-grid">
+
+
+
+<div class="kpi-card">
+
+
+<p>
+관심종목 수
+</p>
+
+
+<h2>
+10
+</h2>
+
+
+<span>
+레버리지·ETF·추천종목 합계
+</span>
+
+
+</div>
+
+
+
+
+
+<div class="kpi-card green">
+
+
+<p>
+매수 관심 시그널
+</p>
+
+
+<h2>
+0
+</h2>
+
+
+<span>
+버핏·렌치 스코어 65점 이상
+</span>
+
+
+</div>
+
+
+
+
+
+<div class="kpi-card blue">
+
+
+<p>
+목표 달성률
+</p>
+
+
+<h2>
+0
+<span>%</span>
+</h2>
+
+
+<span>
+목표 수익금 미설정
+</span>
+
+
+</div>
+
+
+
+
+
+<div class="kpi-card navy">
+
+
+<p>
+현재 평가 손익
+</p>
+
+
+<h2>
++$0.00
+</h2>
+
+
+<span>
+원금 대비
+</span>
+
+
+</div>
+
+
+
+
+
+<div class="kpi-card yellow">
+
+
+<p>
+VIX
+</p>
+
+
+<h2>
+-
+</h2>
+
+
+<span>
+변동성 지수
+</span>
+
+
+</div>
+
+
+
+
+</section>
+
+
+
+
+
+
+
+<!-- ======================
+ AI 영역
+======================= -->
+
+
+<section class="analysis-grid">
+
+
+<div class="card ai-card">
+
+
+<div class="card-title">
+
+
+<h3>
+AI 시그널 분포
+</h3>
+
+
+<span>
+관심종목 기준
+</span>
+
+
+</div>
+
+
+
+
+<div class="signal-box">
+
+
+
+<div class="circle-chart">
+
+
+<strong>
+0
+</strong>
+
+
+<p>
+분석
+</p>
+
+
+</div>
+
+
+
+
+<div class="signal-list">
+
+
+<p>
+
+<span class="green-dot">
+</span>
+
+매수 관심
+<b>
+0건
+</b>
+
+
+</p>
+
+
+
+<p>
+
+<span class="yellow-dot">
+</span>
+
+관망
+<b>
+0건
+</b>
+
+
+</p>
+
+
+
+
+<p>
+
+<span class="red-dot">
+</span>
+
+유의
+<b>
+0건
+</b>
+
+
+</p>
+
+
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+
+
+<div class="card-title">
+
+
+<h3>
+종목별 등락률
+</h3>
+
+
+<span>
+실시간 기준
+</span>
+
+
+</div>
+
+
+
+<div class="empty-message">
+
+
+설정에서 API 키를 입력하면 표시됩니다.
+
+
+</div>
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+<!-- ======================
+ PORTFOLIO
+======================= -->
+
+
+<section class="card watch-section">
+
+
+<div class="section-header">
+
+
+<h3>
+관심종목
+</h3>
+
+
+<div class="add-box">
+
+
+<input
+placeholder="티커 추가 (예: NVDA)"
+>
+
+
+<select>
+
+<option>
+레버리지/인버스
+</option>
+
+</select>
+
+
+<button>
+추가
+</button>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+<div class="category-title">
+
+레버리지 / 인버스
+
+</div>
+
+
+
+
+
+
+<div class="stock-grid">
+
+
+
+<div class="stock-card">
+
+<h4>
+SOXL
+</h4>
+
+
+<p>
+—
+</p>
+
+
+<span>
+API 키 필요
+</span>
+
+
+</div>
+
+
+
+
+
+<div class="stock-card">
+
+<h4>
+SOXS
+</h4>
+
+
+<p>
+—
+</p>
+
+
+<span>
+API 키 필요
+</span>
+
+
+</div>
+
+
+
+
+
+<div class="stock-card">
+
+<h4>
+TQQQ
+</h4>
+
+
+<p>
+—
+</p>
+
+
+<span>
+API 키 필요
+</span>
+
+
+</div>
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+<!-- ======================
+ ACCOUNT
+======================= -->
+
+
+<section class="two-column">
+
+
+<div class="card">
+
+
+<div class="card-title">
+
+<h3>
+내 계좌
+</h3>
+
+<span>
+Toss API
+</span>
+
+
+</div>
+
+
+
+<div class="account-list">
+
+
+<div>
+
+<p>
+총 평가금액
+</p>
+
+<strong>
+-
+</strong>
+
+
+</div>
+
+
+
+<div>
+
+<p>
+총 매입금액
+</p>
+
+<strong>
+-
+</strong>
+
+
+</div>
+
+
+
+
+<div>
+
+<p>
+예수금
+</p>
+
+<strong>
+-
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+
+
+<div class="card-title">
+
+<h3>
+목표 관리
+</h3>
+
+
+</div>
+
+
+
+<div class="goal">
+
+
+<h2>
+0%
+</h2>
+
+
+<div class="progress">
+
+<div></div>
+
+</div>
+
+
+<p>
+목표 금액을 설정해주세요
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+</section>
+
+
+
+
+
+
+
+<!-- ======================
+ JOURNAL
+======================= -->
+
+
+<section class="card journal">
+
+
+<div class="section-header">
+
+
+<h3>
+매매일지
+</h3>
+
+
+<button>
+거래 기록 추가
+</button>
+
+
+</div>
+
+
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>
+날짜
+</th>
+
+<th>
+종목
+</th>
+
+<th>
+매수/매도
+</th>
+
+<th>
+수익률
+</th>
+
+<th>
+메모
+</th>
+
+
+</tr>
+
+</thead>
+
+
+
+<tbody>
+
+
+<tr>
+
+<td colspan="5">
+
+등록된 거래가 없습니다.
+
+</td>
+
+
+</tr>
+
+
+</tbody>
+
+
+</table>
+
+
+
+</section>
+
+
+
+
+
+
+
+</main>
+
+
+</div>
+
+
 </body>
+
 </html>
