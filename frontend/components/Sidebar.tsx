@@ -1,33 +1,57 @@
-export default function Sidebar() {
-  return (
+import {
 
-    <aside className="sidebar">
+LayoutDashboard,
 
-      <div className="logo">
-        WAFER AI
-      </div>
+Wallet,
 
-      <nav>
+NotebookPen,
 
-        <a href="#">🏠 Dashboard</a>
+Target,
 
-        <a href="#">💰 Portfolio</a>
+BarChart3,
 
-        <a href="#">📒 Trading Journal</a>
+Brain,
 
-        <a href="#">📊 Performance</a>
+Globe,
 
-        <a href="#">🎯 Goal</a>
+Settings
 
-        <a href="#">🌎 Market</a>
+} from "lucide-react";
 
-        <a href="#">🤖 AI Score</a>
+export default function Sidebar(){
 
-        <a href="#">⚙ Settings</a>
+return(
 
-      </nav>
+<aside className="sidebar">
 
-    </aside>
+<div className="logo">
 
-  );
+WAFER AI
+
+</div>
+
+<nav>
+
+<a><LayoutDashboard size={20}/> Dashboard</a>
+
+<a><Wallet size={20}/> Portfolio</a>
+
+<a><NotebookPen size={20}/> Trading Journal</a>
+
+<a><Target size={20}/> Goal</a>
+
+<a><BarChart3 size={20}/> Performance</a>
+
+<a><Brain size={20}/> AI Score</a>
+
+<a><Globe size={20}/> Market</a>
+
+<a><Settings size={20}/> Settings</a>
+
+</nav>
+
+</aside>
+
+)
+
 }
