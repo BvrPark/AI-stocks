@@ -1,974 +1,327 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
-
-<title>
-WA-FER | AI Investment Dashboard
-</title>
-
-
-<link rel="stylesheet"
-href="./css/style.css">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WAFER AI Investment Dashboard</title>
+<link rel="stylesheet" href="./css/style.css">
 
 <script src="./js/theme.js" defer></script>
 <script src="./js/api.js" defer></script>
 <script src="./js/app.js" defer></script>
 <script src="./js/portfolio.js" defer></script>
 <script src="./js/trade-journal.js" defer></script>
-
-
 </head>
 
-
 <body>
-
-
-<div class="app">
-
-
-<!-- ======================
-     SIDEBAR
-======================= -->
-
+<div class="app-container">
 
 <aside class="sidebar">
-
-
 <div class="brand">
-
-
-<div class="brand-logo">
-W
-</div>
-
-
+<div class="brand-logo">W</div>
 <div>
-
-<h2>
-WAFER
-</h2>
-
-<p>
-AI 투자 관리 시스템
-</p>
-
-
+<h2>WAFER</h2>
+<p>AI Investment System</p>
+</div>
 </div>
 
+<nav class="sidebar-menu">
+<div class="menu-title">MAIN</div>
+<a class="menu-item active"><span>▦</span>대시보드</a>
 
-</div>
+<div class="menu-title">INVESTMENT</div>
+<a class="menu-item"><span>◈</span>포트폴리오</a>
+<a class="menu-item"><span>★</span>관심종목</a>
+<a class="menu-item"><span>◔</span>시장지표</a>
 
+<div class="menu-title">AI ANALYSIS</div>
+<a class="menu-item"><span>◎</span>AI 매매추천</a>
+<a class="menu-item"><span>♟</span>투자전략</a>
 
+<div class="menu-title">RECORD</div>
+<a class="menu-item"><span>✎</span>매매일지</a>
 
-
-<nav class="menu">
-
-
-<p class="menu-title">
-메인 화면
-</p>
-
-
-<a class="menu-item active">
-
-<span>
-▣
-</span>
-
-통합 대시보드
-
-</a>
-
-
-
-<p class="menu-title">
-투자 정보 관리
-</p>
-
-
-
-<a class="menu-item">
-
-<span>
-▤
-</span>
-
-관심종목 조회
-
-</a>
-
-
-<a class="menu-item">
-
-<span>
-◔
-</span>
-
-시장 지표
-
-</a>
-
-
-
-<p class="menu-title">
-AI 진단
-</p>
-
-
-
-<a class="menu-item">
-
-<span>
-◎
-</span>
-
-AI 매매 추천
-
-</a>
-
-
-
-
-<p class="menu-title">
-목표 관리
-</p>
-
-
-<a class="menu-item">
-
-<span>
-☆ 
-</span>
-
-목표 수익 설정
-
-</a>
-
-
-
-
-<p class="menu-title">
-시스템
-</p>
-
-
-
-<a class="menu-item">
-
-<span>
-⚙
-</span>
-
-API 설정
-
-</a>
-
-
+<div class="menu-title">SYSTEM</div>
+<a class="menu-item"><span>⚙</span>API 설정</a>
 </nav>
 
-
-
-
-<div class="sidebar-bottom">
-
-
-<div class="api-status">
-
-
-<span class="status-dot">
-</span>
-
-
+<div class="sidebar-api">
+<span id="sidebar-api-dot"></span>
 <div>
-
-<strong>
-Toss API
-</strong>
-
-
-<p>
-연결 대기
-</p>
-
-
+<strong>Toss API</strong>
+<p id="sidebar-api-status">연결 확인 중</p>
 </div>
-
-
 </div>
-
-
-
-</div>
-
-
 </aside>
 
 
+<main class="main-content">
 
-
-
-
-<!-- ======================
-     MAIN
-======================= -->
-
-
-<main class="main">
-
-
-
-<header class="topbar">
-
-
+<header class="dashboard-header">
 <div>
-
-
-<div class="breadcrumb">
-
-Home
-<span>
-›
-</span>
-통합 대시보드
-
-
+<div class="breadcrumb">Home / Dashboard</div>
+<h1>내 투자 통합 대시보드</h1>
+<p>토스증권 API 기반 AI 투자 분석 및 매매 기록 관리</p>
 </div>
 
-
-<h1>
-내 투자 통합 대시보드
-</h1>
-
-
-<p class="description">
-
-WAFER AI 투자 관리 시스템 · 관심종목 10개 · 데이터 연동 준비
-
-</p>
-
-
+<div class="header-actions">
+<button id="theme-toggle-button" class="theme-button">🌙 야간</button>
+<button id="refresh-button" class="refresh-button">⟳ 새로고침</button>
+<div class="user-chip">투자자</div>
 </div>
-
-
-
-
-
-<div class="top-actions">
-
-
-<button
-class="theme-button"
-id="theme-toggle-button">
-
-🌙 야간
-
-</button>
-
-
-<div class="date">
-
-2026.08.05
-
-</div>
-
-
-
-<button
-class="user-button">
-
-투자자
-
-</button>
-
-
-
-</div>
-
-
-
 </header>
 
 
-
-
-
-
-
-<!-- ======================
- KPI
-======================= -->
-
-
-<section class="kpi-grid">
-
-
-
-<div class="kpi-card">
-
-
-<p>
-관심종목 수
-</p>
-
-
-<h2>
-10
-</h2>
-
-
-<span>
-레버리지·ETF·추천종목 합계
-</span>
-
-
+<section class="section">
+<div class="section-header">
+<h2>내 계좌</h2>
+<span>ACCOUNT SUMMARY</span>
 </div>
 
+<div class="account-grid">
 
-
-
-
-<div class="kpi-card green">
-
-
-<p>
-매수 관심 시그널
-</p>
-
-
-<h2>
-0
-</h2>
-
-
-<span>
-버핏·렌치 스코어 65점 이상
-</span>
-
-
+<div class="summary-card primary">
+<p>총 평가금액</p>
+<h3 id="account-total-value">-</h3>
+<span>Total Asset</span>
 </div>
 
-
-
-
-
-<div class="kpi-card blue">
-
-
-<p>
-목표 달성률
-</p>
-
-
-<h2>
-0
-<span>%</span>
-</h2>
-
-
-<span>
-목표 수익금 미설정
-</span>
-
-
+<div class="summary-card">
+<p>총 매입금액</p>
+<h3 id="account-buy-value">-</h3>
+<span>Invested</span>
 </div>
 
-
-
-
-
-<div class="kpi-card navy">
-
-
-<p>
-현재 평가 손익
-</p>
-
-
-<h2>
-+$0.00
-</h2>
-
-
-<span>
-원금 대비
-</span>
-
-
+<div class="summary-card">
+<p>예수금</p>
+<h3 id="account-cash">-</h3>
+<span>Cash</span>
 </div>
 
-
-
-
-
-<div class="kpi-card yellow">
-
-
-<p>
-VIX
-</p>
-
-
-<h2>
--
-</h2>
-
-
-<span>
-변동성 지수
-</span>
-
-
+<div class="summary-card">
+<p>평가손익</p>
+<h3 id="account-profit">-</h3>
+<span>Profit / Loss</span>
 </div>
 
+<div class="summary-card">
+<p>수익률</p>
+<h3 id="account-return">-</h3>
+<span>Return</span>
+</div>
 
-
-
+</div>
 </section>
 
 
-
-
-
-
-
-<!-- ======================
- AI 영역
-======================= -->
-
-
-<section class="analysis-grid">
-
-
-<div class="card ai-card">
-
-
-<div class="card-title">
-
-
-<h3>
-AI 시그널 분포
-</h3>
-
-
-<span>
-관심종목 기준
-</span>
-
-
+<section class="section">
+<div class="section-header">
+<h2>시장 지표</h2>
+<span>MARKET INDICATOR</span>
 </div>
 
+<div class="market-grid">
 
-
-
-<div class="signal-box">
-
-
-
-<div class="circle-chart">
-
-
-<strong>
-0
-</strong>
-
-
-<p>
-분석
-</p>
-
-
+<div class="market-card">
+<p>VIX</p>
+<h3 id="vix-value">-</h3>
 </div>
 
-
-
-
-<div class="signal-list">
-
-
-<p>
-
-<span class="green-dot">
-</span>
-
-매수 관심
-<b>
-0건
-</b>
-
-
-</p>
-
-
-
-<p>
-
-<span class="yellow-dot">
-</span>
-
-관망
-<b>
-0건
-</b>
-
-
-</p>
-
-
-
-
-<p>
-
-<span class="red-dot">
-</span>
-
-유의
-<b>
-0건
-</b>
-
-
-</p>
-
-
-
+<div class="market-card">
+<p>나스닥 선물</p>
+<h3 id="nasdaq-value">-</h3>
 </div>
 
-
-
+<div class="market-card">
+<p>공포탐욕지수</p>
+<h3 id="fear-greed-value">-</h3>
 </div>
 
-
+<div class="market-card">
+<p>환율</p>
+<h3 id="exchange-value">-</h3>
 </div>
 
+</div>
+</section>
 
 
+<section class="section two-column">
 
+<div class="card">
+<div class="section-header">
+<h2>AI 투자 점수</h2>
+<span>AI SCORE</span>
+</div>
 
+<div class="ai-score">
+<h1 id="ai-score">-</h1>
+<p id="ai-action">분석 대기</p>
+</div>
+
+<div class="score-rule">
+<p>90~100 : 적극 매수</p>
+<p>70~89 : 분할 매수</p>
+<p>40~69 : 관망</p>
+<p>20~39 : SOXS 관심</p>
+<p>0~19 : SOXS 적극</p>
+</div>
+
+</div>
 
 
 <div class="card">
-
-
-<div class="card-title">
-
-
-<h3>
-종목별 등락률
-</h3>
-
-
-<span>
-실시간 기준
-</span>
-
-
+<div class="section-header">
+<h2>AI 분석 요약</h2>
+<span>AI SUMMARY</span>
 </div>
 
-
-
-<div class="empty-message">
-
-
-설정에서 API 키를 입력하면 표시됩니다.
-
-
+<div id="ai-summary">
+API 연결 후 AI 분석 결과가 표시됩니다.
 </div>
 
-
-
 </div>
-
-
 
 </section>
 
 
-
-
-
-
-
-<!-- ======================
- PORTFOLIO
-======================= -->
-
-
-<section class="card watch-section">
-
+<section class="section">
 
 <div class="section-header">
-
-
-<h3>
-관심종목
-</h3>
-
-
-<div class="add-box">
-
-
-<input
-placeholder="티커 추가 (예: NVDA)"
->
-
-
-<select>
-
-<option>
-레버리지/인버스
-</option>
-
-</select>
-
-
-<button>
-추가
-</button>
-
-
+<h2>관심 종목</h2>
+<span>WATCHLIST</span>
 </div>
 
 
-
-</div>
-
-
-
-
-
-<div class="category-title">
-
-레버리지 / 인버스
-
-</div>
-
-
-
-
-
-
-<div class="stock-grid">
-
-
+<div class="stock-grid" id="watchlist">
 
 <div class="stock-card">
-
-<h4>
-SOXL
-</h4>
-
-
-<p>
-—
-</p>
-
-
-<span>
-API 키 필요
-</span>
-
-
+<h3>SOXL</h3>
+<p id="soxl-price">-</p>
+<span id="soxl-rate">-</span>
 </div>
-
-
-
-
 
 <div class="stock-card">
-
-<h4>
-SOXS
-</h4>
-
-
-<p>
-—
-</p>
-
-
-<span>
-API 키 필요
-</span>
-
-
+<h3>SOXS</h3>
+<p id="soxs-price">-</p>
+<span id="soxs-rate">-</span>
 </div>
-
-
-
-
 
 <div class="stock-card">
-
-<h4>
-TQQQ
-</h4>
-
-
-<p>
-—
-</p>
-
-
-<span>
-API 키 필요
-</span>
-
-
+<h3>TQQQ</h3>
+<p id="tqqq-price">-</p>
+<span id="tqqq-rate">-</span>
 </div>
 
-
-
+<div class="stock-card">
+<h3>NVDA</h3>
+<p id="nvda-price">-</p>
+<span id="nvda-rate">-</span>
 </div>
 
+<div class="stock-card">
+<h3>IONQ</h3>
+<p id="ionq-price">-</p>
+<span id="ionq-rate">-</span>
+</div>
 
-
+</div>
 </section>
 
 
-
-
-
-
-
-
-<!-- ======================
- ACCOUNT
-======================= -->
-
-
-<section class="two-column">
-
-
-<div class="card">
-
-
-<div class="card-title">
-
-<h3>
-내 계좌
-</h3>
-
-<span>
-Toss API
-</span>
-
-
-</div>
-
-
-
-<div class="account-list">
-
-
-<div>
-
-<p>
-총 평가금액
-</p>
-
-<strong>
--
-</strong>
-
-
-</div>
-
-
-
-<div>
-
-<p>
-총 매입금액
-</p>
-
-<strong>
--
-</strong>
-
-
-</div>
-
-
-
-
-<div>
-
-<p>
-예수금
-</p>
-
-<strong>
--
-</strong>
-
-
-</div>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-<div class="card">
-
-
-<div class="card-title">
-
-<h3>
-목표 관리
-</h3>
-
-
-</div>
-
-
-
-<div class="goal">
-
-
-<h2>
-0%
-</h2>
-
-
-<div class="progress">
-
-<div></div>
-
-</div>
-
-
-<p>
-목표 금액을 설정해주세요
-</p>
-
-
-</div>
-
-
-</div>
-
-
-
-
-</section>
-
-
-
-
-
-
-
-<!-- ======================
- JOURNAL
-======================= -->
-
-
-<section class="card journal">
-
+<section class="section">
 
 <div class="section-header">
+<h2>보유 포트폴리오</h2>
+<span>PORTFOLIO</span>
+</div>
 
 
-<h3>
-매매일지
-</h3>
+<div class="card table-card">
+
+<table>
+<thead>
+<tr>
+<th>종목</th>
+<th>수량</th>
+<th>평균단가</th>
+<th>현재가</th>
+<th>평가손익</th>
+<th>수익률</th>
+</tr>
+</thead>
+
+<tbody id="portfolio-list">
+<tr>
+<td colspan="6">API 연결 후 표시됩니다.</td>
+</tr>
+</tbody>
+
+</table>
+
+</div>
+
+</section>
 
 
-<button>
-거래 기록 추가
-</button>
+<section class="section two-column">
 
+<div class="card">
+
+<div class="section-header">
+<h2>목표 관리</h2>
+<span>GOAL</span>
+</div>
+
+<div class="goal-box">
+<h1 id="goal-rate">0%</h1>
+<p id="goal-text">목표 금액을 설정해주세요.</p>
+</div>
 
 </div>
 
 
+<div class="card">
+
+<div class="section-header">
+<h2>매매일지</h2>
+<span>TRADING JOURNAL</span>
+</div>
 
 
 <table>
-
-
 <thead>
-
 <tr>
-
-<th>
-날짜
-</th>
-
-<th>
-종목
-</th>
-
-<th>
-매수/매도
-</th>
-
-<th>
-수익률
-</th>
-
-<th>
-메모
-</th>
-
-
+<th>날짜</th>
+<th>종목</th>
+<th>구분</th>
+<th>수익률</th>
+<th>메모</th>
 </tr>
-
 </thead>
 
-
-
-<tbody>
-
-
+<tbody id="trade-list">
 <tr>
-
-<td colspan="5">
-
-등록된 거래가 없습니다.
-
-</td>
-
-
+<td colspan="5">등록된 매매 기록이 없습니다.</td>
 </tr>
-
-
 </tbody>
-
 
 </table>
 
 
+</div>
 
 </section>
 
 
-
-
-
+<footer>
+<p>WAFER AI Investment Dashboard</p>
+</footer>
 
 
 </main>
 
-
 </div>
 
-
 </body>
-
 </html>
